@@ -91,6 +91,8 @@ def ica_buf_put(simplecoin: SimpleCOIN.IPC, data):
     global DEF_INIT_SETTINGS, init_settings, dst_ip_addr, ica_processed
     if ica_processed == False:
         ica_buf.put(data)
+        m = init_settings['m']
+        print(f'*** {ica_buf.size()} >= ? {m}')
         if ica_buf.size() >= init_settings['m'] and init_settings['W'] is not None:
             simplecoin.submit_func(pid=-1, id='fastica_service')
 

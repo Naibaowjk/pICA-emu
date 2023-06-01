@@ -132,7 +132,6 @@ def ica_buf_put(simplecoin: SimpleCOIN.IPC, data):
         ica_buf.put(data)
         if ica_buf.size() >= init_settings['proc_len'] or ica_buf.size() >= init_settings['m']:
             simplecoin.submit_func(pid=-1, id='pica_service')
-
 # the function app.func('xxx') will create a new thread to run the function
 
 

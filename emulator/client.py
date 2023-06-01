@@ -100,6 +100,7 @@ if __name__ == "__main__":
         transmission_latency = time.time() - t
         print(simpleudp.recvfrom(1000)[0], time.time()-t)
         service_latency = time.time() - t
+        print('*** write result')
         measure_write('client_'+INIT_SETTINGS['mode'],
                       ['n_vnf', n_vnf, 'time_start', t , 'transmission_latency', transmission_latency, 'service_latency', service_latency, 'matrix_w', measure_arr_to_jsonstr(INIT_SETTINGS['W']), 'start_sys_time', t])
         print('*** send write evaluation results command')
