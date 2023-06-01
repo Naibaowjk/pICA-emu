@@ -119,12 +119,10 @@ def fastica_service(simplecoin: SimpleCOIN.IPC):
         ica_processed = True
         simplecoin.sendto(b'### time fastica finish: ', ('10.0.0.12', 1000))
         # Measurements begin.
-        EVALS += ['time_start', time_start, 'matrix_w_pre',
-                  measure_arr_to_jsonstr(W_pre), 'process_time', time_finish - time_start, 
+        EVALS += ['time_start', time_start, 'process_time', time_finish - time_start, 
                 'cpu_usage', cpu_percent_end - cpu_percent_start,
-                'mem_usage', mem_info_start.rss - mem_info_end.rss
+                'mem_usage', mem_info_end.rss - mem_info_start.rss
                 ]
-        EVALS += ['matrix_w', measure_arr_to_jsonstr(init_settings['W'])]
         # Measurements end.
         simplecoin.submit_func(pid=-1, id='measure@write_results')
 

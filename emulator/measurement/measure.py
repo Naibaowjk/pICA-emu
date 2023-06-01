@@ -4,12 +4,14 @@ import pickle
 
 def measure_write(filename,contents):
     filename = 'tmp/' + filename
+    """
     try:
         f = open("measurement/"+filename+".csv","r")
         data = f.read()
     except Exception:
-        data = ''
-    data = data + ','.join(map(str,contents)) + ',\n'
+        data = '' 
+    """
+    data = ','.join(map(str,contents)) + ',\n'
     with open("measurement/"+filename+".csv",'a') as f:
         f.write(data)
     f.close()

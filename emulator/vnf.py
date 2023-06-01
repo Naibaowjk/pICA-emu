@@ -165,26 +165,29 @@ def pica_service(simplecoin: SimpleCOIN.IPC):
                 # Measurements end.
                 # Measurements begin.
                 EVALS += ['time_start', time_start,
-                          'process_time', time_finish - time_start, 'cpu_usage', cpu_percent_end - cpu_percent_start,
-                          'mem_usage', mem_info_start.rss - mem_info_end.rss]
-                EVALS += ['matrix_w',
-                          measure_arr_to_jsonstr(init_settings['W'])]
+                          'process_time', time_finish - time_start,
+                          'cpu_usage', cpu_percent_end - cpu_percent_start,
+                          'mem_usage', mem_info_end.rss - mem_info_start.rss]
                 # Measurements end.
                 init_settings['node_max_ext_nums'][0] -= 1
             elif ica_buf.size() >= init_settings['m']:
                 # break
                 W_pre = init_settings['W']
-                print('*** vnf pica processing!')
+                print('*** vnf fastica processing!')
                 # Measurements begin.
                 time_start = time.time()
+                cpu_percent_start = process.cpu_percent()
+                mem_info_start = process.memory_info()
                 icanetwork.fastica_nw(init_settings, ica_buf)
+                cpu_percent_end = process.cpu_percent()
+                mem_info_end = process.memory_info()
                 time_finish = time.time()
                 # Measurements end.
                 # Measurements begin.
-                EVALS += ['time_start', time_start, 'matrix_w_pre', measure_arr_to_jsonstr(W_pre),
-                          'process_time', time_finish - time_start]
-                EVALS += ['matrix_w',
-                          measure_arr_to_jsonstr(init_settings['W'])]
+                EVALS += ['time_start', time_start,
+                          'process_time', time_finish - time_start,
+                          'cpu_usage', cpu_percent_end - cpu_percent_start,
+                          'mem_usage', mem_info_end.rss - mem_info_start.rss]
                 # Measurements end.
                 init_settings['node_max_ext_nums'][0] -= 1
                 init_settings['is_finish'] = True
