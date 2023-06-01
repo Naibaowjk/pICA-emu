@@ -4,7 +4,6 @@ __pycache__/
 .mypy_cache/
 *.py[cod]
 *$py.class
-
 .vagrant/
 emulation/build/
 *.so
@@ -19,16 +18,13 @@ emulator/measurement/*/*.pdf
 emulator/measurement/plot/*.pdf
 emulator/measurement/plot_*.py
 emulator/measurement/get_*.py
-
 saxs.pkl
 saxsNew.pkl
 simplecoinstd.py
 simplecoinlite.py
-
 emulator/MIMII/saxs.pkl
 emulator/MIMII/saxsNew.pkl
-
 emu-installer/*
-
+emu-installer/simpleemu/*
 autocmd.py
 temp.autocmdcfg
