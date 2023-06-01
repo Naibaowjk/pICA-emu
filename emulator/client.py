@@ -81,7 +81,7 @@ if __name__ == "__main__":
         simpleudp.sendto(pktutils.serialize_data(
             HEADER_CLEAR_CACHE), serverAddressPort)
 
-        time.sleep(0.5)
+        time.sleep(1)
         print('*** send data')
         i = 0
         t = time.time()
