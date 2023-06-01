@@ -68,7 +68,7 @@ if __name__ == "__main__":
 
     for k in range(n_test):
         
-        dataset_id = n_start + k
+        dataset_id = n_start
         S, A, X = ss[dataset_id], aa[dataset_id], xx[dataset_id]
         n = A.shape[0]
         print("*** no.:", k+1, '-th test, no.', dataset_id, '-th mixtrue')
