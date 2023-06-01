@@ -85,14 +85,13 @@ if __name__ == "__main__":
         print('*** send data')
         i = 0
         t = time.time()
-        time_packet_sent = t
         for chunk in chunk_arr:
-            time.sleep(0.03)
-            time_packet_sent += 0.003 
+            time.sleep(0.01)
             simpleudp.sendto(chunk, serverAddressPort)
             if i % 500 == 0:
                 print('packet:', i, ', len:', len(chunk))
             i += 1
+        time
 
         print('*** last_pkt:', time.strftime("%H:%M:%S", time.localtime()))
         print('*** time sent all pkg     : ', time.time()-t)
