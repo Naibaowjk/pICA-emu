@@ -134,9 +134,8 @@ def write_results(simplecoin: SimpleCOIN.IPC):
     global DEF_INIT_SETTINGS, init_settings, dst_ip_addr, ica_processed, EVALS
     # Measurements write.
     if len(EVALS) < 1:
-        EVALS += ['time_start', time.time(), 'matrix_w_pre', measure_arr_to_jsonstr(init_settings['W']), 'process_time', 0, 
-                  'cpu_usage',0, 'mem_usage', 0, 'matrix_w',
-                  measure_arr_to_jsonstr(init_settings['W'])]
+        EVALS += ['time_start', time.time(),  'process_time', 0, 
+                  'cpu_usage',0, 'mem_usage', 0]
     print('*** write reults')
     measure_write('server_'+init_settings['mode'], EVALS)
 

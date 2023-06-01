@@ -103,7 +103,7 @@ def write_results(simplecoin: SimpleCOIN.IPC, EVAL_MODE, W):
     print('*** write reults')
     if EVALS[1] == 'cf':
         if len(EVALS) <= 4:
-            EVALS += ['matrix_w_pre', measure_arr_to_jsonstr(W), 'process_time', 0, 'cpu_usage', 0, 'mem_usage', 0, 'matrix_w', measure_arr_to_jsonstr(W)]
+            EVALS += ['process_time', 0, 'cpu_usage', 0, 'mem_usage', 0]
         measure_write(IFCE_NAME+'_'+init_settings['mode'], EVALS)
 
 
@@ -164,7 +164,7 @@ def pica_service(simplecoin: SimpleCOIN.IPC):
                 time_finish = time.time()
                 # Measurements end.
                 # Measurements begin.
-                EVALS += ['time_start', time_start, 'matrix_w_pre', measure_arr_to_jsonstr(W_pre),
+                EVALS += ['time_start', time_start,
                           'process_time', time_finish - time_start, 'cpu_usage', cpu_percent_end - cpu_percent_start,
                           'mem_usage', mem_info_start.rss - mem_info_end.rss]
                 EVALS += ['matrix_w',
