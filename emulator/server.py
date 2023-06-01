@@ -15,6 +15,7 @@ all functions are similiar to vnf.py
 import numpy as np
 import pickle
 import time
+import psutil
 from picautils.icanetwork import icanetwork
 from picautils.icabuffer import ICABuffer
 from picautils.packetutils import *
@@ -101,7 +102,12 @@ def fastica_service(simplecoin: SimpleCOIN.IPC):
         W_pre = init_settings['W']
         print('*** server fastica processing!')
         time_start = time.time()
+        process = psutil.Process()
+        cpu_percent_start = process.cpu_percent()
+        mem_info_start = process.memory_info()
         icanetwork.fastica_nw(init_settings, ica_buf)
+        cpu_percent_end = process.cpu_percent()
+        mem_info_end = process.memory_info()
         hat_S = np.dot(init_settings['W'], ica_buf.buffer)
         check_hat_s = hat_S.shape[0]
         time_finish = time.time()
@@ -112,7 +118,10 @@ def fastica_service(simplecoin: SimpleCOIN.IPC):
         simplecoin.sendto(b'### time fastica finish: ', ('10.0.0.12', 1000))
         # Measurements begin.
         EVALS += ['time_start', time_start, 'matrix_w_pre',
-                  measure_arr_to_jsonstr(W_pre), 'process_time', time_finish - time_start]
+                  measure_arr_to_jsonstr(W_pre), 'process_time', time_finish - time_start, 
+                'cpu_usage', cpu_percent_end - cpu_percent_start,
+                'mem_usage', mem_info_start - mem_info_end
+                ]
         EVALS += ['matrix_w', measure_arr_to_jsonstr(init_settings['W'])]
         # Measurements end.
         simplecoin.submit_func(pid=-1, id='measure@write_results')
@@ -123,7 +132,8 @@ def write_results(simplecoin: SimpleCOIN.IPC):
     global DEF_INIT_SETTINGS, init_settings, dst_ip_addr, ica_processed, EVALS
     # Measurements write.
     if len(EVALS) < 1:
-        EVALS += ['time_start', time.time(), 'matrix_w_pre', measure_arr_to_jsonstr(init_settings['W']), 'process_time', 0, 'matrix_w',
+        EVALS += ['time_start', time.time(), 'matrix_w_pre', measure_arr_to_jsonstr(init_settings['W']), 'process_time', 0, 
+                  'cpu_usage',0, 'mem_usage', 0, 'matrix_w',
                   measure_arr_to_jsonstr(init_settings['W'])]
     print('*** write reults')
     measure_write('server_'+init_settings['mode'], EVALS)
