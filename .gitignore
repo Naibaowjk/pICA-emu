@@ -28,5 +28,7 @@ simplecoinlite.py
 emulator/MIMII/saxs.pkl
 emulator/MIMII/saxsNew.pkl
 
+emu-installer/*
+
 autocmd.py
 temp.autocmdcfg
