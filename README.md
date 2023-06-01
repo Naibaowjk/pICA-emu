@@ -46,7 +46,7 @@ Please run follow steps to setup the emulator. Assume the source directory of `p
     bash ./install.sh -d
 
     sudo groupadd docker
-    sudo gpasswd -a vagrant docker
+    sudo gpasswd -a lighthouse docker
     newgrp docker
     sudo systemctl start docker
     
