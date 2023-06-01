@@ -122,7 +122,7 @@ def fastica_service(simplecoin: SimpleCOIN.IPC):
         EVALS += ['time_start', time_start, 'matrix_w_pre',
                   measure_arr_to_jsonstr(W_pre), 'process_time', time_finish - time_start, 
                 'cpu_usage', cpu_percent_end - cpu_percent_start,
-                'mem_usage', mem_info_start - mem_info_end
+                'mem_usage', mem_info_start.rss - mem_info_end.rss
                 ]
         EVALS += ['matrix_w', measure_arr_to_jsonstr(init_settings['W'])]
         # Measurements end.
