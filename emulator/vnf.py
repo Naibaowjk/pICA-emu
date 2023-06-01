@@ -67,8 +67,8 @@ def main(simplecoin: SimpleCOIN.IPC, af_packet: bytes):
                     init_settings, (packet['IP_dst'], packet['Port_dst']),))
             else:
                 print('*** vnf transmit init_settings!')
-                simplecoin.forward(af_packet)
-                simplecoin.submit_func(pid=0, id='measure@time_start')
+            simplecoin.forward(af_packet)
+            simplecoin.submit_func(pid=0, id='measure@time_start')
             EVAL_MODE = init_settings['mode']
         elif header == HEADER_DATA or header == HEADER_FINISH:
             # ####################################
