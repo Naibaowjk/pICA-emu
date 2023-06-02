@@ -16,6 +16,7 @@ import numpy as np
 import time
 import pickle
 import sys
+import psutil
 from picautils.packetutils import *
 from picautils.pybss_testbed import pybss_tb
 from simpleemu.simpleudp import simpleudp
@@ -72,7 +73,7 @@ if __name__ == "__main__":
         S, A, X = ss[dataset_id], aa[dataset_id], xx[dataset_id]
         n = A.shape[0]
         print("*** no.:", k+1, '-th test, no.', dataset_id, '-th mixtrue')
-
+        process = psutil.Process()
         # time.sleep(0.5)
         chunk_arr = pktutils.get_chunks(
             init_settings=INIT_SETTINGS, X=X, m_substream=160, dtype=np.float16)
@@ -95,6 +96,10 @@ if __name__ == "__main__":
 
         print('*** last_pkt:', time.strftime("%H:%M:%S", time.localtime()))
         print('*** time sent all pkg     : ', time.time()-t)
+        cpu_percent_end = process.cpu_percent()
+        mem_info_end = process.memory_info()
+        print(f'***cpu usage: {cpu_percent_end}')
+        print(f'***mem usage: {mem_info_end.rss}')
         print(simpleudp.recvfrom(1000)[0], time.time()-t)
         transmission_latency = time.time() - t
         print(simpleudp.recvfrom(1000)[0], time.time()-t)
