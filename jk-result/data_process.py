@@ -75,16 +75,21 @@ for node in number_node:
             for i_node in range(node):
                 # still need to append the server
 
-                task_id = str(job_nr) + '_' + str(i_node)
+                task_id = str(job_nr) + '_' + 'vnf_' + str(i_node)
                 task_id_list.append(task_id)
 
                 measure_data_file = configuration_name + 'vnf' + str(i_node) + '-s' + str(i_node) + '_cf.csv'
                 df = pd.read_csv(measure_data_file, header=None)
-
-                duration = df.iloc[i_time, 5]
-                start_time = df.iloc[i_time, 3]
-                cpu_usage = df.iloc[i_time, 7]
-                mem_usage = df.iloc[i_time, 9]
+                if node < 8:
+                    duration = df.iloc[i_time, 5]
+                    start_time = df.iloc[i_time, 3]
+                    cpu_usage = df.iloc[i_time, 7]
+                    mem_usage = df.iloc[i_time, 9]
+                else:
+                    duration = df.iloc[i_time, 7]
+                    start_time = df.iloc[i_time, 3]
+                    cpu_usage = df.iloc[i_time, 9]
+                    mem_usage = df.iloc[i_time, 11]
                 list_row = [job_nr, task_id, start_time, duration, cpu_usage, mem_usage]
                 new_job_pd.loc[len(new_job_pd)] = list_row
 
