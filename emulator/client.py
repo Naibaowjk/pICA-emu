@@ -86,9 +86,11 @@ if __name__ == "__main__":
         print('*** send data')
         i = 0
         t = time.time()
+        cpu_percent_end = 0
         for chunk in chunk_arr:
             time.sleep(0.01)
             simpleudp.sendto(chunk, serverAddressPort)
+            cpu_percent_end = process.cpu_percent()
             if i % 500 == 0:
                 print('packet:', i, ', len:', len(chunk))
             i += 1
@@ -96,7 +98,7 @@ if __name__ == "__main__":
 
         print('*** last_pkt:', time.strftime("%H:%M:%S", time.localtime()))
         print('*** time sent all pkg     : ', time.time()-t)
-        cpu_percent_end = process.cpu_percent()
+        
         mem_info_end = process.memory_info()
         print(f'***cpu usage: {cpu_percent_end}')
         print(f'***mem usage: {mem_info_end.rss}')

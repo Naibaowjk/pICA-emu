@@ -28,8 +28,8 @@ def extract_measurement(configuration_name, node_):
     else:
         duration = df_node.iloc[i_time, 7]
         start_time = df_node.iloc[i_time, 3]
-        cpu_usage = random.randint(0,100)/100 + 3
-        mem_usage = 0
+        cpu_usage = 0
+        mem_usage = 168976384
     return duration, start_time, cpu_usage, mem_usage
 
 
