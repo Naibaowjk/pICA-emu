@@ -14,12 +14,17 @@ Forwarding VNF via packet socket.
 import numpy as np
 import pickle
 import time
+import logging
 from picautils.icanetwork import icanetwork
 from picautils.icabuffer import ICABuffer
 from picautils.packetutils import *
 from simpleemu.simplecoin import SimpleCOIN
 from simpleemu.simpleudp import simpleudp
 from measurement.measure import measure_write, measure_arr_to_jsonstr
+
+logging.basicConfig(
+                     format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s-%(funcName)s',
+                     level=logging.DEBUG)
 
 EVALS = []
 EVAL_W = None
@@ -54,19 +59,19 @@ def main(simplecoin: SimpleCOIN.IPC, af_packet: bytes):
         chunk = packet['Chunk']
         header = int(chunk[0])
         if header == HEADER_CLEAR_CACHE:
-            print('*** vnf clearing cache!')
+            logging.debug('*** vnf clearing cache!')
             simplecoin.submit_func(pid=0, id='clear_cache')
-            print('*** vnf transmiting clearing message to next node!')
+            logging.debug('*** vnf transmiting clearing message to next node!')
             simplecoin.forward(af_packet)
         elif header == HEADER_INIT:
             init_settings.update(pickle.loads(chunk[1:]))
             if init_settings['is_finish'] == False:
-                print('*** vnf initializing!')
-                print("*** recv init_setting: {init_setting}")
+                logging.debug('*** vnf initializing!')
+                logging.debug("*** recv init_setting: {init_setting}")
                 simplecoin.submit_func(pid=0, id='set_init_settings', args=(
                     init_settings, (packet['IP_dst'], packet['Port_dst']),))
             else:
-                print('*** vnf transmit init_settings!')
+                logging.debug('*** vnf transmit init_settings!')
                 simplecoin.forward(af_packet)
                 simplecoin.submit_func(pid=0, id='measure@time_start')
             EVAL_MODE = init_settings['mode']
@@ -79,7 +84,7 @@ def main(simplecoin: SimpleCOIN.IPC, af_packet: bytes):
                 pid=0, id='put_ica_buf', args=(pickle.loads(chunk[1:]),))
             if header == HEADER_FINISH:
                 t = time.localtime()
-                print('*** last_pkt:', time.strftime("%H:%M:%S", t))
+                logging.debug('*** last_pkt:', time.strftime("%H:%M:%S", t))
         elif header == HEADER_EVAL:
             simplecoin.submit_func(pid=0, id='measure@write_results', args=(
                 EVAL_MODE, init_settings['W']))
@@ -100,7 +105,7 @@ def write_results(simplecoin: SimpleCOIN.IPC, EVAL_MODE, W):
     global EVALS
     # Measurements write.
     EVALS = ['mode', EVAL_MODE] + EVALS
-    print('*** write reults')
+    logging.debug('*** write reults')
     if EVALS[1] == 'cf':
         if len(EVALS) <= 4:
             EVALS += ['matrix_w_pre', measure_arr_to_jsonstr(W), 'process_time', 0, 'matrix_w', measure_arr_to_jsonstr(W)]
@@ -144,21 +149,21 @@ def pica_service(simplecoin: SimpleCOIN.IPC):
             time_finish, time_start = 0, 0
             if init_settings['is_finish'] == True or init_settings['node_max_ext_nums'][0] == 0:
                 del init_settings['node_max_ext_nums'][0]
-                print(f"*** after del node_max_ext_nums[0]: {init_settings['node_max_ext_nums']}")
+                logging.debug(f"*** after del node_max_ext_nums[0]: {init_settings['node_max_ext_nums']}")
                 simplecoin.sendto(pktutils.serialize_data(
                     HEADER_INIT, init_settings), dst_ip_addr)
                 ica_processed = True
                 ica_buf.init()
                 init_settings.update(DEF_INIT_SETTINGS)
-                print('*** vnf pica processing finished!')
+                logging.debug('*** vnf pica processing finished!')
                 break
             elif ica_buf.size() >= init_settings['proc_len']:
                 W_pre = init_settings['W']
-                print(f'*** vnf pica processing! buf.size() > proc_len')
+                logging.debug(f'*** vnf pica processing! buf.size() > proc_len')
                 # Measurements begin.
                 time_start = time.time()
                 icanetwork.pica_nw(init_settings, ica_buf)
-                print(f"*** [vnf-pica]: proc_len_ret", init_settings['proc_len'])
+                logging.debug(f"*** [vnf-pica]: proc_len_ret", init_settings['proc_len'])
                 time_finish = time.time()
                 # Measurements end.
                 # Measurements begin.
@@ -171,7 +176,7 @@ def pica_service(simplecoin: SimpleCOIN.IPC):
             elif ica_buf.size() >= init_settings['m']:
                 # break
                 W_pre = init_settings['W']
-                print(f'*** vnf pica processing! buf.size() > m')
+                logging.debug(f'*** vnf pica processing! buf.size() > m')
                 # Measurements begin.
                 time_start = time.time()
                 icanetwork.fastica_nw(init_settings, ica_buf)
