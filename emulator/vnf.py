@@ -135,6 +135,7 @@ def ica_buf_put(simplecoin: SimpleCOIN.IPC, data):
     global DEF_INIT_SETTINGS, init_settings, dst_ip_addr, ica_processed
     if ica_processed == False:
         ica_buf.put(data)
+        logging.debug(f"current buf size: {ica_buf.size()}")
         if ica_buf.size() >= init_settings['proc_len'] or ica_buf.size() >= init_settings['m']:
             simplecoin.submit_func(pid=-1, id='pica_service')
 
