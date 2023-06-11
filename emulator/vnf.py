@@ -84,7 +84,7 @@ def main(simplecoin: SimpleCOIN.IPC, af_packet: bytes):
                 pid=0, id='put_ica_buf', args=(pickle.loads(chunk[1:]),))
             if header == HEADER_FINISH:
                 t = time.localtime()
-                logging.debug('*** last_pkt:', time.strftime("%H:%M:%S", t))
+                logging.debug(f'*** last_pkt: {time.strftime("%H:%M:%S", t)}')
         elif header == HEADER_EVAL:
             simplecoin.submit_func(pid=0, id='measure@write_results', args=(
                 EVAL_MODE, init_settings['W']))
@@ -163,7 +163,7 @@ def pica_service(simplecoin: SimpleCOIN.IPC):
                 # Measurements begin.
                 time_start = time.time()
                 icanetwork.pica_nw(init_settings, ica_buf)
-                logging.debug(f"*** [vnf-pica]: proc_len_ret", init_settings['proc_len'])
+                logging.debug(f"*** [vnf-pica]: proc_len_ret: {init_settings['proc_len']}")
                 time_finish = time.time()
                 # Measurements end.
                 # Measurements begin.
