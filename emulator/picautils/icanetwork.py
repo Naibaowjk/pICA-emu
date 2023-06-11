@@ -88,6 +88,7 @@ class ICANetwork():
 
     def pica_nw(self, init_settings, ica_buf):
         # read settings
+        print(f"*** [pica_nw]: proc_len_old", init_settings['proc_len'])
         proc_len = init_settings['proc_len']
         W = init_settings['W']
         proc_len_multiplier = init_settings['proc_len_multiplier']
@@ -111,6 +112,7 @@ class ICANetwork():
         init_settings['proc_len'] = proc_len
         init_settings['proc_len_multiplier'] = proc_len_multiplier
         init_settings['W'] = W
+        print(f"*** [pica_nw]: proc_len_new", init_settings['proc_len'])
 
 
     def fastica_nw(self, init_settings, ica_buf):

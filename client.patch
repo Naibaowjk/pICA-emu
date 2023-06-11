@@ -1,0 +1,65 @@
+diff --git a/emulator/client.py b/emulator/client.py
+index 784281b..594b5d6 100644
+--- a/emulator/client.py
++++ b/emulator/client.py
+@@ -16,7 +16,6 @@ import numpy as np
+ import time
+ import pickle
+ import sys
+-import psutil
+ from picautils.packetutils import *
+ from picautils.pybss_testbed import pybss_tb
+ from simpleemu.simpleudp import simpleudp
+@@ -69,11 +68,11 @@ if __name__ == "__main__":
+ 
+     for k in range(n_test):
+         
+-        dataset_id = n_start
++        dataset_id = n_start + k
+         S, A, X = ss[dataset_id], aa[dataset_id], xx[dataset_id]
+         n = A.shape[0]
+         print("*** no.:", k+1, '-th test, no.', dataset_id, '-th mixtrue')
+-        process = psutil.Process()
++
+         # time.sleep(0.5)
+         chunk_arr = pktutils.get_chunks(
+             init_settings=INIT_SETTINGS, X=X, m_substream=160, dtype=np.float16)
+@@ -82,33 +81,27 @@ if __name__ == "__main__":
+         simpleudp.sendto(pktutils.serialize_data(
+             HEADER_CLEAR_CACHE), serverAddressPort)
+ 
+-        time.sleep(1)
++        time.sleep(0.5)
+         print('*** send data')
+         i = 0
+         t = time.time()
+-        cpu_percent_end = 0
++        time_packet_sent = t
+         for chunk in chunk_arr:
+-            time.sleep(0.01)
++            time.sleep(max(0, time_packet_sent - time.time()))
++            time_packet_sent += 0.003 
+             simpleudp.sendto(chunk, serverAddressPort)
+-            cpu_percent_end = process.cpu_percent()
+             if i % 500 == 0:
+                 print('packet:', i, ', len:', len(chunk))
+             i += 1
+-        time
+ 
+         print('*** last_pkt:', time.strftime("%H:%M:%S", time.localtime()))
+         print('*** time sent all pkg     : ', time.time()-t)
+-        
+-        mem_info_end = process.memory_info()
+-        print(f'***cpu usage: {cpu_percent_end}')
+-        print(f'***mem usage: {mem_info_end.rss}')
+         print(simpleudp.recvfrom(1000)[0], time.time()-t)
+         transmission_latency = time.time() - t
+         print(simpleudp.recvfrom(1000)[0], time.time()-t)
+         service_latency = time.time() - t
+-        print('*** write result')
+         measure_write('client_'+INIT_SETTINGS['mode'],
+-                      ['n_vnf', n_vnf, 'time_start', t , 'transmission_latency', transmission_latency, 'service_latency', service_latency, 'start_sys_time', t])
++                      ['n_vnf', n_vnf, 'time_start', t , 'transmission_latency', transmission_latency, 'service_latency', service_latency, 'matrix_w', measure_arr_to_jsonstr(INIT_SETTINGS['W']), 'start_sys_time', t])
+         print('*** send write evaluation results command')
+         simpleudp.sendto(pktutils.serialize_data(
+             HEADER_EVAL), serverAddressPort)
