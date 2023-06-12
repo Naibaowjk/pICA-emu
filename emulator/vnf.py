@@ -176,7 +176,7 @@ def pica_service(simplecoin: SimpleCOIN.IPC):
                 EVALS += ['time_start', time_start,
                           'process_time', time_finish - time_start,
                           'cpu_usage', cpu_percent_end,
--                         'mem_usage', mem_info_end.rss]
+                          'mem_usage', mem_info_end.rss]
                 # Measurements end.
                 init_settings['node_max_ext_nums'][0] -= 1
             elif ica_buf.size() >= init_settings['m']:
