@@ -15,6 +15,7 @@ import numpy as np
 import pickle
 import time
 import logging
+import psutil
 from picautils.icanetwork import icanetwork
 from picautils.icabuffer import ICABuffer
 from picautils.packetutils import *
@@ -108,8 +109,7 @@ def write_results(simplecoin: SimpleCOIN.IPC, EVAL_MODE, W):
     logging.debug('*** write reults')
     if EVALS[1] == 'cf':
         if len(EVALS) <= 4:
-            EVALS += ['matrix_w_pre', measure_arr_to_jsonstr(W), 'process_time', 0, 'matrix_w', measure_arr_to_jsonstr(W)]
-        measure_write(IFCE_NAME+'_'+init_settings['mode'], EVALS)
+            EVALS += ['process_time', 0, 'cpu_usage', 0, 'mem_usage', 0]
 
 
 @app.func('clear_cache')
@@ -163,31 +163,40 @@ def pica_service(simplecoin: SimpleCOIN.IPC):
                 logging.debug(f'*** vnf pica processing! buf.size() > proc_len')
                 # Measurements begin.
                 time_start = time.time()
+                process = psutil.Process()
+                cpu_percent_start = process.cpu_percent()
+                mem_info_start = process.memory_info()
                 icanetwork.pica_nw(init_settings, ica_buf)
+                cpu_percent_end = process.cpu_percent()
+                mem_info_end = process.memory_info()
                 logging.debug(f"*** [vnf-pica]: proc_len_ret: {init_settings['proc_len']}")
                 time_finish = time.time()
                 # Measurements end.
                 # Measurements begin.
-                EVALS += ['time_start', time_start, 'matrix_w_pre', measure_arr_to_jsonstr(W_pre),
-                          'process_time', time_finish - time_start]
-                EVALS += ['matrix_w',
-                          measure_arr_to_jsonstr(init_settings['W'])]
+                EVALS += ['time_start', time_start,
+                          'process_time', time_finish - time_start,
+                          'cpu_usage', cpu_percent_end,
+-                         'mem_usage', mem_info_end.rss]
                 # Measurements end.
                 init_settings['node_max_ext_nums'][0] -= 1
             elif ica_buf.size() >= init_settings['m']:
                 # break
                 W_pre = init_settings['W']
-                logging.debug(f'*** vnf pica processing! buf.size() > m')
+                logging.debug(f'*** vnf fastica processing')
                 # Measurements begin.
                 time_start = time.time()
+                cpu_percent_start = process.cpu_percent()
+                mem_info_start = process.memory_info()
                 icanetwork.fastica_nw(init_settings, ica_buf)
+                cpu_percent_end = process.cpu_percent()
+                mem_info_end = process.memory_info()
                 time_finish = time.time()
                 # Measurements end.
                 # Measurements begin.
-                EVALS += ['time_start', time_start, 'matrix_w_pre', measure_arr_to_jsonstr(W_pre),
-                          'process_time', time_finish - time_start]
-                EVALS += ['matrix_w',
-                          measure_arr_to_jsonstr(init_settings['W'])]
+                EVALS += ['time_start', time_start,
+                          'process_time', time_finish - time_start,
+                          'cpu_usage', cpu_percent_end,
+                          'mem_usage', mem_info_end.rss]
                 # Measurements end.
                 init_settings['node_max_ext_nums'][0] -= 1
                 init_settings['is_finish'] = True
