@@ -110,6 +110,7 @@ def write_results(simplecoin: SimpleCOIN.IPC, EVAL_MODE, W):
     if EVALS[1] == 'cf':
         if len(EVALS) <= 4:
             EVALS += ['process_time', 0, 'cpu_usage', 0, 'mem_usage', 0]
+        measure_write(IFCE_NAME+'_'+init_settings['mode'], EVALS)
 
 
 @app.func('clear_cache')
