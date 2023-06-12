@@ -113,7 +113,7 @@ if __name__ == "__main__":
                        'service_latency', service_latency, 
                        'start_sys_time', t ,
                        'cpu_usage', cpu_percent_end,
-                       'mem_usage', mem_info_end])
+                       'mem_usage', mem_info_end.rss])
 
         print('*** send write evaluation results command')
         simpleudp.sendto(pktutils.serialize_data(
