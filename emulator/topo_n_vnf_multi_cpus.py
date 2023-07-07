@@ -37,7 +37,7 @@ if __name__ == "__main__":
         mytopo.addHostNodes(node_names=['vnf'+ str(i)],
                             ip_prefix='10.0.0.', ip_suffixes=[str(i+1)],
                             dimage='pica_dev:4', volume=None,
-                            docker_args={"cpuset_cpus": str(i//3+1), 'cpu_quota': 30000})
+                            docker_args={"cpuset_cpus": str(i), 'cpu_quota': 30000})
 
     mytopo.addSwitchNodes(node_names=['s'+ str(i) for i in range(n_vnf)])
     # create links, `bw` is bandwith, unit of bandwith is 'Mbit/s'

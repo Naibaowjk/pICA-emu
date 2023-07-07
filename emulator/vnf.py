@@ -186,6 +186,7 @@ def pica_service(simplecoin: SimpleCOIN.IPC):
                 logging.debug(f'*** vnf fastica processing')
                 # Measurements begin.
                 time_start = time.time()
+                process = psutil.Process()
                 cpu_percent_start = process.cpu_percent()
                 mem_info_start = process.memory_info()
                 icanetwork.fastica_nw(init_settings, ica_buf)
